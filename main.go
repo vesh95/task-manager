@@ -6,19 +6,30 @@ import (
 	"os/signal"
 
 	"github.com/vesh95/task-manager/pkg/server"
+	"github.com/vesh95/task-manager/pkg/server/db"
 )
 
-var HTTP_ADDRESS = ""
-var HTTP_PORT = "7540"
-var webDir = "web"
+var (
+	HTTP_ADDRESS,
+	HTTP_PORT,
+	TODO_DBFILE,
+	webDir string
+)
 
 func main() {
 	HTTP_ADDRESS = envOrDefaul("TODO_ADDR", "")
 	HTTP_PORT = envOrDefaul("TODO_PORT", "7540")
+	TODO_DBFILE = envOrDefaul("TODO_DBFILE", "scheduler.db")
+	webDir = envOrDefaul("WEB_DIR", "web")
 	logger := log.Default()
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
+
+	err := db.Init(TODO_DBFILE)
+	if err != nil {
+		log.Fatalf("error while connecting database: %s", err)
+	}
 
 	s := server.NewServer(HTTP_ADDRESS, HTTP_PORT, webDir, logger)
 	go s.Run()
