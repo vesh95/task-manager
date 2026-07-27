@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/vesh95/task-manager/pkg/db"
 	"github.com/vesh95/task-manager/pkg/server"
-	"github.com/vesh95/task-manager/pkg/server/db"
 )
 
 var (
