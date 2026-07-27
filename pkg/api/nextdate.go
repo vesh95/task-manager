@@ -80,6 +80,11 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 			return "", nil
 		}
 
+		max := slices.Max(weekdays)
+		if max > 7 {
+			return "", fmt.Errorf("invalid repeat param")
+		}
+
 		newDate = now             // Т.к. нас интересуют следующие числа, то считаем сразу от текущей даты
 		for i := 1; i <= 7; i++ { // Достаточно проитерировать только 7 дней
 			newDate = newDate.AddDate(0, 0, 1)
@@ -109,7 +114,11 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 			if err != nil {
 				return "", err
 			}
-			replaceNegativeDays(days, lastDay)
+			err = filterMonthDays(days, lastDay)
+			if err != nil {
+				return "", err
+			}
+
 			slices.Sort(days)
 
 			if slices.Contains(months, int(m)) || len(months) == 0 {
@@ -153,8 +162,12 @@ func daysInMonth(m time.Month, year int) int {
 	return t.Day()
 }
 
-func replaceNegativeDays(d []int, lastDay int) {
+func filterMonthDays(d []int, lastDay int) error {
 	for i, v := range d {
+		if v > 31 || v < -2 {
+			return fmt.Errorf("invalid day number")
+		}
+
 		switch v {
 		case -1:
 			d[i] = lastDay
@@ -162,4 +175,6 @@ func replaceNegativeDays(d []int, lastDay int) {
 			d[i] = lastDay - 1
 		}
 	}
+
+	return nil
 }
