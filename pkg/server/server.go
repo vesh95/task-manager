@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/vesh95/task-manager/pkg/api"
 )
 
 type Server struct {
@@ -16,6 +18,7 @@ type Server struct {
 func NewServer(addr, port, webDir string, logger *log.Logger) *Server {
 	m := http.NewServeMux()
 	m.Handle("/", http.FileServer(http.Dir(webDir)))
+	m.HandleFunc("/api/nextdate", api.NextDateHandler)
 
 	s := &http.Server{
 		Addr:     fmt.Sprintf("%s:%s", addr, port),
