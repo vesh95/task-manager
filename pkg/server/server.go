@@ -27,6 +27,8 @@ func NewServer(addr, port, webDir string, logger *log.Logger) *Server {
 			api.GetTaskHandler(w, r)
 		case http.MethodPut:
 			api.UpdateTaskHandler(w, r)
+		case http.MethodDelete:
+			api.DeleteTaskHandler(w, r)
 		}
 	})
 	m.HandleFunc("/api/tasks", api.GetTasksHandler)
