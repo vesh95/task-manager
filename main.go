@@ -22,7 +22,7 @@ func main() {
 	HTTP_ADDRESS = envOrDefaul("TODO_ADDR", "")
 	HTTP_PORT = envOrDefaul("TODO_PORT", "7540")
 	TODO_DBFILE = envOrDefaul("TODO_DBFILE", "scheduler.db")
-	api.TodoPassword = envOrDefaul("TODO_PASSWORD", "12345")
+	api.TodoPassword = envOrDefaul("TODO_PASSWORD", "")
 	webDir = envOrDefaul("WEB_DIR", "web")
 	logger := log.Default()
 
