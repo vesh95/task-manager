@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -77,8 +78,14 @@ func Tasks(limit int, search string) ([]Task, error) {
 	query := `SELECT id, date, title, comment, repeat FROM scheduler`
 
 	if search != "" {
-		qArgs = append(qArgs, sql.Named("search", search))
-		query += fmt.Sprintln(query, `WHERE title LIKE :search OR comment LIKE :search OR date = :search`)
+		s, err := time.Parse("02.01.2006", search)
+		if err != nil {
+			qArgs = append(qArgs, sql.Named("search", "%"+search+"%"))
+			query = fmt.Sprintln(query, `WHERE title LIKE :search OR comment LIKE :search`)
+		} else {
+			qArgs = append(qArgs, sql.Named("search", s.Format("20060102")))
+			query = fmt.Sprintln(query, `WHERE date = :search`)
+		}
 	}
 
 	query = fmt.Sprintln(query, `LIMIT :limit`)
