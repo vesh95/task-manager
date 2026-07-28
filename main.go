@@ -36,6 +36,7 @@ func main() {
 
 	<-sig
 	s.Shutdown()
+	db.Close()
 }
 
 func envOrDefaul(envName, defaultValue string) string {
