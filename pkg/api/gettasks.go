@@ -16,10 +16,10 @@ func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	tasks := make([]db.Task, 0)
 	tasks, err := db.Tasks(50, search)
 	if err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusInternalServerError)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusInternalServerError)
 		return
 	}
 
 	resp := TasksResponse{tasks}
-	wrireJson(w, resp, http.StatusOK)
+	writeJson(w, resp, http.StatusOK)
 }

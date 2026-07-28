@@ -10,15 +10,15 @@ import (
 func GetTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.FormValue("id"))
 	if err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
 		return
 	}
 
 	task, err := db.GetTask(id)
 	if err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
 		return
 	}
 
-	wrireJson(w, task, http.StatusOK)
+	writeJson(w, task, http.StatusOK)
 }

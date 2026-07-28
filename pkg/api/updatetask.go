@@ -13,18 +13,18 @@ import (
 func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var req db.Task
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
 		return
 	}
 
 	if err := validateUpdateTaskRequest(req); err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
 		return
 	}
 
 	date, err := recalculateReplaceDate(time.Now(), req.Date, req.Repeat)
 	if err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -32,11 +32,11 @@ func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	err = db.UpdateTask(req)
 
 	if err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusInternalServerError)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusInternalServerError)
 		return
 	}
 
-	wrireJson(w, struct{}{}, http.StatusOK)
+	writeJson(w, struct{}{}, http.StatusOK)
 }
 
 func validateUpdateTaskRequest(req db.Task) error {

@@ -24,12 +24,12 @@ type CreateTaskResponse struct {
 func CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var req CreateTaskRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusBadRequest)
 		return
 	}
 
 	if err := validateCreateRequest(req); err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -41,18 +41,18 @@ func CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	date, err := recalculateReplaceDate(time.Now(), req.Date, req.Repeat)
 	if err != nil {
-		wrireJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
+		writeJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
 		return
 	}
 
 	task.Date = date
 	id, err := db.AddTask(task)
 	if err != nil {
-		wrireJson(w, ErrorResponse{fmt.Sprintf("Ошибка при создании задачи: %s", err)}, http.StatusInternalServerError)
+		writeJson(w, ErrorResponse{fmt.Sprintf("Ошибка при создании задачи: %s", err)}, http.StatusInternalServerError)
 		return
 	}
 
-	wrireJson(w, CreateTaskResponse{id}, http.StatusCreated)
+	writeJson(w, CreateTaskResponse{id}, http.StatusCreated)
 }
 
 func validateCreateRequest(req CreateTaskRequest) error {

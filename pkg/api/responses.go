@@ -10,7 +10,7 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-func wrireJson(w http.ResponseWriter, resp any, statusCode int) {
+func writeJson(w http.ResponseWriter, resp any, statusCode int) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(statusCode)
 	encErr := json.NewEncoder(w).Encode(resp)

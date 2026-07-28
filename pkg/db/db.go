@@ -143,3 +143,22 @@ func UpdateTask(task Task) error {
 
 	return err
 }
+
+func DeleteTask(id int) error {
+	query := `DELETE FROM scheduler WHERE id = ?`
+	res, err := db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf(`incorrect id for deleting task`)
+	}
+
+	return err
+}
