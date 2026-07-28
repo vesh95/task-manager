@@ -58,7 +58,7 @@ func CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			task.Date = nd
 		} else {
-			task.Date = now.Format(DateFormat)
+			task.Date = date.Format(DateFormat)
 		}
 	}
 
