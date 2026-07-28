@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 
 	_ "modernc.org/sqlite"
@@ -69,4 +70,38 @@ func AddTask(task Task) (int64, error) {
 	}
 
 	return id, err
+}
+
+func Tasks(limit int, search string) ([]Task, error) {
+	qArgs := []interface{}{sql.Named("limit", limit)}
+	query := `SELECT id, date, title, comment, repeat FROM scheduler`
+
+	if search != "" {
+		qArgs = append(qArgs, sql.Named("search", search))
+		query += fmt.Sprintln(query, `WHERE title LIKE :search OR comment LIKE :search OR date = :search`)
+	}
+
+	query = fmt.Sprintln(query, `LIMIT :limit`)
+
+	rows, err := db.Query(query, qArgs...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tasks := []Task{}
+	for rows.Next() {
+		task := Task{}
+		err := rows.Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
+		if err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, task)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
 }
