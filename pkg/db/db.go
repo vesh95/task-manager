@@ -23,7 +23,7 @@ CREATE INDEX  scheduler_date_idx ON scheduler(date DESC);
 `
 
 type Task struct {
-	ID      int    `json:"id"`
+	ID      string `json:"id"`
 	Date    string `json:"date"`
 	Title   string `json:"title"`
 	Comment string `json:"comment"`
