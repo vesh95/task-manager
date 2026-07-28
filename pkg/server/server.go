@@ -32,6 +32,7 @@ func NewServer(addr, port, webDir string, logger *log.Logger) *Server {
 		}
 	})
 	m.HandleFunc("/api/tasks", api.GetTasksHandler)
+	m.HandleFunc("/api/task/done", api.DoneTaskHandler)
 
 	s := &http.Server{
 		Addr:     fmt.Sprintf("%s:%s", addr, port),
