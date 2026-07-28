@@ -50,7 +50,7 @@ func CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if date.Before(now) && req.Repeat != "" {
+		if date.Before(now.Truncate(time.Hour*24)) && req.Repeat != "" {
 			nd, err := NextDate(now, req.Date, req.Repeat)
 			if err != nil {
 				wrireJson(w, ErrorResponse{"Неверное правило повторения"}, http.StatusUnprocessableEntity)
@@ -62,9 +62,7 @@ func CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	fmt.Println(task)
 	id, err := db.AddTask(task)
-
 	if err != nil {
 		wrireJson(w, ErrorResponse{fmt.Sprintf("Ошибка при создании задачи: %s", err)}, http.StatusInternalServerError)
 		return

@@ -66,7 +66,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 			return "", fmt.Errorf("invalid repeat param")
 		}
 
-		newDate = tStart
+		newDate = tStart.AddDate(0, 0, days)
 		for newDate.Before(now.Truncate(time.Hour * 24)) {
 			newDate = newDate.AddDate(0, 0, days)
 		}
