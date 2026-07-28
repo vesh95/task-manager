@@ -23,6 +23,10 @@ func NewServer(addr, port, webDir string, logger *log.Logger) *Server {
 		switch r.Method {
 		case http.MethodPost:
 			api.CreateTaskHandler(w, r)
+		case http.MethodGet:
+			api.GetTaskHandler(w, r)
+		case http.MethodPut:
+			api.UpdateTaskHandler(w, r)
 		}
 	})
 	m.HandleFunc("/api/tasks", api.GetTasksHandler)
