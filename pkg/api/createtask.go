@@ -28,40 +28,24 @@ func CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationErr := validateCreateRequest(req)
-	if validationErr != nil {
-		wrireJson(w, ErrorResponse{validationErr.Error()}, http.StatusUnprocessableEntity)
+	if err := validateCreateRequest(req); err != nil {
+		wrireJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
 		return
 	}
 
-	now := time.Now()
 	task := db.Task{
 		Title:   req.Title,
 		Comment: req.Comment,
 		Repeat:  req.Repeat,
 	}
 
-	if req.Date == "" {
-		task.Date = now.Format(DateFormat)
-	} else {
-		date, err := time.Parse(DateFormat, req.Date)
-		if err != nil {
-			wrireJson(w, ErrorResponse{"Неверный формат даты"}, http.StatusBadRequest)
-			return
-		}
-
-		if date.Before(now.Truncate(time.Hour*24)) && req.Repeat != "" {
-			nd, err := NextDate(now, req.Date, req.Repeat)
-			if err != nil {
-				wrireJson(w, ErrorResponse{"Неверное правило повторения"}, http.StatusUnprocessableEntity)
-				return
-			}
-			task.Date = nd
-		} else {
-			task.Date = date.Format(DateFormat)
-		}
+	date, err := recalculateReplaceDate(time.Now(), req.Date, req.Repeat)
+	if err != nil {
+		wrireJson(w, ErrorResponse{err.Error()}, http.StatusUnprocessableEntity)
+		return
 	}
 
+	task.Date = date
 	id, err := db.AddTask(task)
 	if err != nil {
 		wrireJson(w, ErrorResponse{fmt.Sprintf("Ошибка при создании задачи: %s", err)}, http.StatusInternalServerError)
