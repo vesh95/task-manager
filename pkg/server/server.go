@@ -19,7 +19,7 @@ func NewServer(addr, port, webDir string, logger *log.Logger) *Server {
 	m := http.NewServeMux()
 	m.Handle("/", http.FileServer(http.Dir(webDir)))
 	m.HandleFunc("/api/nextdate", api.NextDateHandler)
-	m.HandleFunc("/api/task", func(w http.ResponseWriter, r *http.Request) {
+	m.HandleFunc("/api/task", api.Auth(api.TodoPassword, func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
 			api.CreateTaskHandler(w, r)
@@ -30,9 +30,10 @@ func NewServer(addr, port, webDir string, logger *log.Logger) *Server {
 		case http.MethodDelete:
 			api.DeleteTaskHandler(w, r)
 		}
-	})
-	m.HandleFunc("/api/tasks", api.GetTasksHandler)
-	m.HandleFunc("/api/task/done", api.DoneTaskHandler)
+	}))
+	m.HandleFunc("/api/tasks", api.Auth(api.TodoPassword, api.GetTasksHandler))
+	m.HandleFunc("/api/task/done", api.Auth(api.TodoPassword, api.DoneTaskHandler))
+	m.HandleFunc("/api/signin", api.SigninHandler)
 
 	s := &http.Server{
 		Addr:     fmt.Sprintf("%s:%s", addr, port),

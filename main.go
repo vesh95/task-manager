@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/vesh95/task-manager/pkg/api"
 	"github.com/vesh95/task-manager/pkg/db"
 	"github.com/vesh95/task-manager/pkg/server"
 )
@@ -13,6 +14,7 @@ var (
 	HTTP_ADDRESS,
 	HTTP_PORT,
 	TODO_DBFILE,
+	TODO_PASSWORD,
 	webDir string
 )
 
@@ -20,6 +22,7 @@ func main() {
 	HTTP_ADDRESS = envOrDefaul("TODO_ADDR", "")
 	HTTP_PORT = envOrDefaul("TODO_PORT", "7540")
 	TODO_DBFILE = envOrDefaul("TODO_DBFILE", "scheduler.db")
+	api.TodoPassword = envOrDefaul("TODO_PASSWORD", "12345")
 	webDir = envOrDefaul("WEB_DIR", "web")
 	logger := log.Default()
 
