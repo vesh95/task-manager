@@ -67,7 +67,8 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		}
 
 		newDate = tStart.AddDate(0, 0, days)
-		for newDate.Before(now.Truncate(time.Hour * 24)) {
+		nowDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+		for newDate.Before(nowDate) {
 			newDate = newDate.AddDate(0, 0, days)
 		}
 	case "w":

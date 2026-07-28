@@ -5,7 +5,7 @@ import (
 )
 
 func recalculateReplaceDate(now time.Time, taskDate, taskRepeat string) (string, error) {
-	now = now.Truncate(time.Hour * 24)
+	now = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	if taskDate == "" {
 		return now.Format(DateFormat), nil
 	} else {
@@ -16,8 +16,10 @@ func recalculateReplaceDate(now time.Time, taskDate, taskRepeat string) (string,
 
 		if date.Before(now) && taskRepeat != "" {
 			return NextDate(now, taskDate, taskRepeat)
-		} else {
+		} else if date.Before(now) {
 			return now.Format(DateFormat), nil
+		} else {
+			return taskDate, nil
 		}
 	}
 }
