@@ -88,7 +88,7 @@ func Tasks(limit int, search string) ([]Task, error) {
 		}
 	}
 
-	query = fmt.Sprintln(query, `LIMIT :limit`)
+	query = fmt.Sprintln(query, `ORDER BY date DESC LIMIT :limit`)
 
 	rows, err := db.Query(query, qArgs...)
 	if err != nil {
